@@ -7,7 +7,7 @@ const { testConnection } = require("./config/db")
 testConnection()
 
 const userRoute = require('./routes/userRoutes')
-
+const appointmentRoute = require('./routes/appointmentRouter')
 
 
 
@@ -16,13 +16,11 @@ app.use(express.json())
 
 
 app.use("/api/user", userRoute)
+app.use("/api/appoint", appointmentRoute)
 
 
 port = process.env.PORT || 7000
 
-app.get("/", (req, res) => {
-    res.send({ msg: "Hello from backend doc-sys" })
-})
 
 
 app.listen(port, () => {

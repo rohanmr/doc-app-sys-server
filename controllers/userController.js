@@ -4,6 +4,7 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 
 
+
 const register = async (req, res) => {
     const { fullName, email, password, contactNumber, address, } = req.body
 
@@ -64,4 +65,48 @@ const login = async (req, res) => {
 }
 
 
-module.exports = { register, login }
+const getUserInfo = async (req, res) => {
+
+    const userId = req.user.id
+
+    try {
+
+        if (!userId) {
+            return res.status(400).send({ msg: "User not found" })
+        }
+        const userInfo = await User.findOne({ where: { id: userId }, attributes: ['id', 'fullName', 'email', 'address', 'contactNumber', 'role'] })
+
+        return res.status(200).send({ user: userInfo })
+
+    } catch (error) {
+        return res.status(500).send({ msg: "Internal Server Error" })
+
+    }
+
+}
+
+const doctorList = async (req, res) => {
+    try {
+
+        const doctors = await User.findAll({ where: { role: "Doctor" }, attributes: ['id', 'fullName'] })
+
+        if (!doctors) {
+            return res.status(400).send({ msg: "Something went wrong" })
+        }
+
+        return res.status(200).send({ doctors: doctors })
+
+    } catch (error) {
+        return res.status(500).send({ msg: "Internal Server Error" })
+
+    }
+
+}
+
+
+
+
+
+
+
+module.exports = { register, login, getUserInfo, doctorList }
