@@ -4,9 +4,14 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 
 
+BASEURL = `${process.env.URL}/uploads/`
+
 
 const register = async (req, res) => {
+
     const { fullName, email, password, contactNumber, address, } = req.body
+
+    const imagePath = req.file ? req.file.filename : null
 
     try {
 
@@ -20,7 +25,7 @@ const register = async (req, res) => {
             return res.status(409).send({ msg: "User already exists" })
         }
 
-        await User.create({ fullName, email, password, contactNumber, address, })
+        await User.create({ fullName, email, password, contactNumber, address, imagePath })
 
         return res.status(201).send({ msg: "User Registered Successfully" })
 
@@ -74,7 +79,10 @@ const getUserInfo = async (req, res) => {
         if (!userId) {
             return res.status(400).send({ msg: "User not found" })
         }
-        const userInfo = await User.findOne({ where: { id: userId }, attributes: ['id', 'fullName', 'email', 'address', 'contactNumber', 'role'] })
+
+        const userInfo = await User.findOne({ where: { id: userId }, attributes: ['id', 'fullName', 'email', 'address', 'contactNumber', 'role', 'imagePath'] })
+
+        userInfo.imagePath = BASEURL + userInfo.imagePath
 
         return res.status(200).send({ user: userInfo })
 

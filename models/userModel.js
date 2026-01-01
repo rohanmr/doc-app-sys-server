@@ -33,6 +33,9 @@ const User = sequelize.define("User", {
     role: {
         type: DataTypes.ENUM("User", "Doctor", "Admin"),
         defaultValue: "User"
+    },
+    imagePath: {
+        type: DataTypes.STRING(255)
     }
 }, { timestamps: true, tableName: "Users" })
 

@@ -17,6 +17,7 @@ app.use(express.json())
 
 app.use("/api/user", userRoute)
 app.use("/api/appoint", appointmentRoute)
+app.use('/uploads', express.static('uploads'));
 
 
 port = process.env.PORT || 7000
