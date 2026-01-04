@@ -8,7 +8,7 @@ testConnection()
 
 const userRoute = require('./routes/userRoutes')
 const appointmentRoute = require('./routes/appointmentRouter')
-
+const doctorRoute = require('./routes/doctorRoute')
 
 
 app.use(cors())
@@ -18,7 +18,7 @@ app.use(express.json())
 app.use("/api/user", userRoute)
 app.use("/api/appoint", appointmentRoute)
 
-
+app.use('/api/doc', doctorRoute)
 
 app.use('/uploads', express.static('uploads'));
 

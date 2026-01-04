@@ -1,6 +1,6 @@
 const User = require('./userModel')
 const Appointment = require('./appointModel')
-
+const Doctor = require('./doctorModel')
 // Patient → Appointment
 User.hasMany(Appointment, { foreignKey: 'createdBy' })
 Appointment.belongsTo(User, { foreignKey: 'createdBy', as: 'patient' })
@@ -16,4 +16,9 @@ User.belongsTo(Appointment, { foreignKey: 'doctorId', as: 'doctorUser' })
 // Updated By → User
 Appointment.belongsTo(User, { foreignKey: 'updatedBy', as: 'updatedByUser' })
 
-module.exports = { User, Appointment }
+User.belongsTo(Doctor, { foreignKey: "createdBy" })
+Doctor.belongsTo(User, { foreignKey: "createdBy", as: "createdUser" })
+
+
+module.exports = { User, Appointment, Doctor }
+
