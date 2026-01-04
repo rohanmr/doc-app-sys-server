@@ -1,4 +1,5 @@
-const Appointment = require("../models/appointModel")
+const Appointment = require("../models/appointModel");
+const User = require("../models/userModel");
 
 const createAppoint = async (req, res) => {
 
@@ -27,9 +28,13 @@ const createAppoint = async (req, res) => {
 const getAppointsByUser = async (req, res) => {
     const userId = req.user.id
     try {
-        const appointments = await Appointment.findAll({ where: { createdBy: userId } })
+        const appointments = await Appointment.findAll({
+            where: { createdBy: userId },
+            order: [['createdAt', 'DESC']]
+        })
 
-        if (appointments.length == 0) {
+
+        if (!appointments.length) {
             return res.status(400).send({ msg: "No appointment yet" })
         }
 
@@ -65,10 +70,14 @@ const showAppointsOfDoctor = async (req, res) => {
     const doctorId = req.user.id
 
     try {
+
         if (!doctorId) {
-            return res.status(400).send({ msg: "No Doctor Found" })
+            return res.status(400).send({ msg: "Something went wrong" })
         }
-        const appointment = await Appointment.findAll({ where: { doctorId: doctorId } })
+        const appointment = await Appointment.findAll({
+            where: { doctorId },
+
+        })
 
         if (appointment.length == 0) {
             return res.status(400).send({ msg: "No Appointment yet" })

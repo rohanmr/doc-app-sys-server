@@ -1,6 +1,6 @@
 const express = require('express')
 const userController = require('../controllers/userController')
-const { auth } = require('../middlewares/authMiddleware')
+const { auth, admin } = require('../middlewares/authMiddleware')
 const upload = require("../middlewares/multer")
 const router = express.Router()
 
@@ -11,6 +11,10 @@ router.post("/login", userController.login)
 router.get("/getUserInfo", auth, userController.getUserInfo)
 
 
+router.put("/updateUser/:ID", auth, userController.updateUser)
+
+router.get('/userList', auth, admin, userController.userList)
+router.delete('/deleteUser/:ID', auth, admin, userController.deleteUser)
 
 router.get('/doctorList', auth, userController.doctorList)
 

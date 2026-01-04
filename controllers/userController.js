@@ -96,7 +96,7 @@ const getUserInfo = async (req, res) => {
 const doctorList = async (req, res) => {
     try {
 
-        const doctors = await User.findAll({ where: { role: "Doctor" }, attributes: ['id', 'fullName'] })
+        const doctors = await User.findAll({ where: { role: "Doctor" }, attributes: ['id', 'fullName', 'email', 'contactNumber', 'address'] })
 
         if (!doctors) {
             return res.status(400).send({ msg: "Something went wrong" })
@@ -110,11 +110,62 @@ const doctorList = async (req, res) => {
     }
 
 }
+const userList = async (req, res) => {
+    try {
+
+        const users = await User.findAll({ where: { role: "User" }, attributes: ['id', 'fullName', 'email', 'contactNumber', 'address'] })
+
+        if (!users) {
+            return res.status(400).send({ msg: "Something went wrong" })
+        }
+
+        return res.status(200).send({ users: users })
+
+    } catch (error) {
+        return res.status(500).send({ msg: "Internal Server Error" })
+
+    }
+
+}
+
+const deleteUser = async (req, res) => {
+
+    const ID = req.params.ID
+
+    try {
+
+        const deletedUser = await User.destroy({ where: { id: ID } })
+
+        if (!deletedUser) {
+            return res.status(400).send({ msg: "User Not Found" })
+        }
+
+        return res.status(200).send({ msg: " User deleted successfully" })
+
+    } catch (error) {
+        return res.status(500).send({ msg: "Internal Server Error" })
+
+    }
+}
+
+const updateUser = async (req, res) => {
+    const ID = req.params.ID
+    const { name, email, contactNumber, address } = req.body
+
+    try {
+        const [updatedUser] = await User.update({ name, email, contactNumber, address }, { where: { id: ID } })
+
+        if (updatedUser === 0) {
+            return res.status(404).send({ msg: "User Not Found" })
+        }
+
+        return res.status(200).send({ msg: "User updated Successfully", success: true })
 
 
+    } catch (error) {
+        return res.status(500).send({ msg: "Internal Server Error", success: false })
+    }
+}
 
 
-
-
-
-module.exports = { register, login, getUserInfo, doctorList }
+module.exports = { register, login, getUserInfo, doctorList, userList, deleteUser, updateUser }

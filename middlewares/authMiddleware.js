@@ -20,7 +20,6 @@ const auth = (req, res, next) => {
 
 }
 
-
 const doctor = (req, res, next) => {
 
     if (req.user.role === 'Doctor') {
@@ -30,4 +29,13 @@ const doctor = (req, res, next) => {
     }
 }
 
-module.exports = { auth, doctor }
+const admin = (req, res, next) => {
+    if (req.user.role === 'Admin') {
+        return next()
+    } else {
+        return res.status(401).send({ msg: 'User Unauthorized' })
+    }
+}
+
+
+module.exports = { auth, doctor, admin }
