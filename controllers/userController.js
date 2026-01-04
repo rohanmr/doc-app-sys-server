@@ -2,6 +2,10 @@
 const User = require("../models/userModel")
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
+const { where } = require("sequelize")
+
+
+
 
 
 BASEURL = `${process.env.URL}/uploads/`
@@ -167,5 +171,34 @@ const updateUser = async (req, res) => {
     }
 }
 
+const updateProfile = async (req, res) => {
 
-module.exports = { register, login, getUserInfo, doctorList, userList, deleteUser, updateUser }
+    const imagePath = req.file ? req.file.filename : null
+
+    try {
+        const user = await User.findOne({ where: { id: req.user.id } })
+
+        if (!user) {
+            return res.status(400).send({ msg: "User Profile not found" })
+        }
+
+        const [updateImg] = await User.update({ imagePath: imagePath }, { where: { id: req.user.id } })
+
+        if (updateImg === 0) {
+            return res.status(400).send({ msg: "Profile not update" })
+        }
+
+        return res.status(200).send({ msg: "Profile updated successfully" })
+
+
+
+    } catch (error) {
+        return res.status(500).send({ msg: "Internal Server Error", success: false })
+
+    }
+
+}
+
+
+
+module.exports = { register, login, getUserInfo, doctorList, userList, deleteUser, updateUser, updateProfile }
