@@ -2,7 +2,6 @@
 const User = require("../models/userModel")
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
-const { where } = require("sequelize")
 
 
 
@@ -154,10 +153,10 @@ const deleteUser = async (req, res) => {
 
 const updateUser = async (req, res) => {
     const ID = req.params.ID
-    const { name, email, contactNumber, address } = req.body
+    const { fullName, contactNumber, address } = req.body
 
     try {
-        const [updatedUser] = await User.update({ name, email, contactNumber, address }, { where: { id: ID } })
+        const [updatedUser] = await User.update({ fullName, contactNumber, address }, { where: { id: ID } })
 
         if (updatedUser === 0) {
             return res.status(404).send({ msg: "User Not Found" })
@@ -188,7 +187,7 @@ const updateProfile = async (req, res) => {
             return res.status(400).send({ msg: "Profile not update" })
         }
 
-        return res.status(200).send({ msg: "Profile updated successfully" })
+        return res.status(200).send({ msg: "Profile Image updated successfully" })
 
 
 

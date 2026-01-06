@@ -21,8 +21,6 @@ const applyDoctor = async (req, res) => {
 
 const docStatus = async (req, res) => {
     try {
-
-
         const DoctorID = req.params.DoctorID
 
         const getDoctor = await Doctor.findByPk(DoctorID)

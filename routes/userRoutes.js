@@ -10,7 +10,7 @@ router.post("/login", userController.login)
 
 router.get("/getUserInfo", auth, userController.getUserInfo)
 
-router.patch('/updateProfile', auth, upload.single('userImage'), userController.updateProfile)
+router.patch('/updateProfile', auth, upload.single('image'), userController.updateProfile)
 
 router.put("/updateUser/:ID", auth, userController.updateUser)
 
