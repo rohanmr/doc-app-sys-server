@@ -1,3 +1,4 @@
+const { where } = require("sequelize");
 const Doctor = require("../models/doctorModel");
 const User = require("../models/userModel");
 
@@ -21,23 +22,31 @@ const applyDoctor = async (req, res) => {
 
 const docStatus = async (req, res) => {
     try {
-        const DoctorID = req.params.DoctorID
+        const userID = req.params.userID
+        const { status } = req.body
 
-        const getDoctor = await Doctor.findByPk(DoctorID)
+        const doctor = await Doctor.findByPk(userID);
 
-        if (!getDoctor) {
-            res.status(400).send({ msg: "Doctor not found", success: true })
-        } else {
-
-            getDoctor.status = "Accepted";
-            await getDoctor.save();
-
-            if (getDoctor) {
-                await User.update({ role: "Doctor" }, { where: { id: getDoctor.createdBy } })
-            }
-            return res.status(200).send({ msg: "Doctor applied successfully", success: true });
-
+        if (!doctor) {
+            return res.status(404).send({ msg: "Doctor not found", success: false, });
         }
+
+        doctor.status = status;
+        doctor.updatedBy = req.user.id;
+        await doctor.save();
+
+
+        if (status === "Accepted") {
+
+            await User.update({ role: "Doctor" }, { where: { id: doctor.createdBy } });
+
+            return res.status(200).send({ msg: "Doctor Application Approved", success: true, });
+        }
+
+
+        await User.update({ role: "User" }, { where: { id: doctor.createdBy } });
+
+        return res.status(200).send({ msg: "Doctor Application Rejected", success: true, });
 
     } catch (error) {
         return res.status(500).send({ msg: "Internal Server Error" });
@@ -51,12 +60,13 @@ const getDoctorApp = async (req, res) => {
             return res.status(400).send({ msg: "Doctors Not Found" })
         }
 
-        return res.status(200).send({ doctors: doctors })
+        return res.status(200).send({ doctors: doctors },)
 
     } catch (error) {
         res.status(500).send({ msg: "Server Error" });
     }
 }
+
 
 const updateDoctor = (req, res) => {
     try {
@@ -68,13 +78,18 @@ const updateDoctor = (req, res) => {
     }
 }
 
-const deleteDoctor = (req, res) => {
+const deleteDoctor = async (req, res) => {
+    const ID = req.params.ID
     try {
-        res
-            .status(200)
-            .send({ msg: "Doctor created successfully", success: true });
+        const doctor = await Doctor.destroy({ where: { id: ID } })
+        if (!doctor) {
+            return res.status(400).send({ msg: "Doctors Not Found" })
+        }
+
+        return res.status(200).send({ msg: "Applicant deleted successfully" },)
+
     } catch (error) {
-        res.status(500).send({ msg: "Server Error" });
+        return res.status(500).send({ msg: "Internal Server Error" });
     }
 }
 module.exports = { applyDoctor, docStatus, getDoctorApp, updateDoctor, deleteDoctor }

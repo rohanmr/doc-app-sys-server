@@ -1,6 +1,6 @@
-const User = require('./userModel')
-const Appointment = require('./appointModel')
-const Doctor = require('./doctorModel')
+const User = require('../models/userModel')
+const Appointment = require('../models/appointModel')
+const Doctor = require('../models/doctorModel')
 // Patient → Appointment
 User.hasMany(Appointment, { foreignKey: 'createdBy' })
 Appointment.belongsTo(User, { foreignKey: 'createdBy', as: 'patient' })
