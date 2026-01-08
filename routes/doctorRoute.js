@@ -6,9 +6,9 @@ const router = express.Router()
 
 
 router.post('/apply', auth, doctorController.applyDoctor)
-router.post('/docStatus/:userID', auth, admin, doctorController.docStatus)
+router.put('/docStatus/:userID', auth, admin, doctorController.docStatus)
 router.get('/getDocApp', auth, admin, doctorController.getDoctorApp)
-// router.patch('/update/:ID',doctorController.updateDoctor)
+// router.put('/update/:ID',doctorController.updateDoctor)
 router.delete('/delete/:ID', doctorController.deleteDoctor)
 
 
