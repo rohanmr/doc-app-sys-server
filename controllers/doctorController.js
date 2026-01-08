@@ -34,6 +34,7 @@ const docStatus = async (req, res) => {
         doctor.status = status;
         doctor.updatedBy = req.user.id;
         await doctor.save();
+32
 
 
         if (status === "Accepted") {
